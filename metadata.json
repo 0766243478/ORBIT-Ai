@@ -1,0 +1,6 @@
+{
+  "name": "ORBIT AI",
+  "description": "Adaptive Intelligence Assistant powered by the ORBIT Adaptive Intelligence Engine (OAIE) for local, cloud, and hybrid AI execution.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

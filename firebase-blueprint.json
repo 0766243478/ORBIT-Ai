@@ -1,0 +1,252 @@
+{
+  "entities": {
+    "UserProfile": {
+      "title": "UserProfile",
+      "description": "Private user settings, privacy posture, and consent preferences isolated per authenticated user.",
+      "type": "object",
+      "properties": {
+        "uid": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "email": {
+          "type": "string",
+          "format": "email",
+          "maxLength": 254
+        },
+        "displayName": {
+          "type": "string",
+          "maxLength": 120
+        },
+        "language": {
+          "type": "string",
+          "enum": ["en", "ar"]
+        },
+        "privacyMode": {
+          "type": "string",
+          "enum": ["STRICT_LOCAL", "BALANCED", "FLEXIBLE", "CUSTOM"]
+        },
+        "persistConversations": {
+          "type": "boolean"
+        },
+        "customPreferences": {
+          "type": "object",
+          "description": "Custom privacy preferences object"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "required": [
+        "uid",
+        "email",
+        "displayName",
+        "language",
+        "privacyMode",
+        "persistConversations",
+        "customPreferences",
+        "createdAt",
+        "updatedAt"
+      ]
+    },
+    "Conversation": {
+      "title": "Conversation",
+      "description": "User-owned assistant conversation metadata.",
+      "type": "object",
+      "properties": {
+        "ownerId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "title": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 140
+        },
+        "language": {
+          "type": "string",
+          "enum": ["en", "ar"]
+        },
+        "messageCount": {
+          "type": "integer"
+        },
+        "lastRoute": {
+          "type": "string",
+          "enum": ["LOCAL", "CLOUD", "HYBRID", "BLOCKED"]
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "required": [
+        "ownerId",
+        "title",
+        "language",
+        "messageCount",
+        "lastRoute",
+        "createdAt",
+        "updatedAt"
+      ]
+    },
+    "Message": {
+      "title": "Message",
+      "description": "Individual conversation turn with execution route provenance.",
+      "type": "object",
+      "properties": {
+        "ownerId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "conversationId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "role": {
+          "type": "string",
+          "enum": ["user", "assistant"]
+        },
+        "content": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 32000
+        },
+        "route": {
+          "type": "string",
+          "enum": ["LOCAL", "CLOUD", "HYBRID", "BLOCKED"]
+        },
+        "modelUsed": {
+          "type": "string",
+          "maxLength": 100
+        },
+        "latencyMs": {
+          "type": "number"
+        },
+        "estimatedCostUsd": {
+          "type": "number"
+        },
+        "privacyStatus": {
+          "type": "string",
+          "maxLength": 80
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "required": [
+        "ownerId",
+        "conversationId",
+        "role",
+        "content",
+        "route",
+        "modelUsed",
+        "latencyMs",
+        "estimatedCostUsd",
+        "privacyStatus",
+        "createdAt"
+      ]
+    },
+    "TelemetryEntry": {
+      "title": "TelemetryEntry",
+      "description": "Non-content execution telemetry record storing measured latency, route, model, and cost.",
+      "type": "object",
+      "properties": {
+        "ownerId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "taskType": {
+          "type": "string",
+          "maxLength": 64
+        },
+        "route": {
+          "type": "string",
+          "enum": ["LOCAL", "CLOUD", "HYBRID", "BLOCKED"]
+        },
+        "modelUsed": {
+          "type": "string",
+          "maxLength": 100
+        },
+        "privacyMode": {
+          "type": "string",
+          "enum": ["STRICT_LOCAL", "BALANCED", "FLEXIBLE", "CUSTOM"]
+        },
+        "estimatedLatencyMs": {
+          "type": "number"
+        },
+        "actualLatencyMs": {
+          "type": "number"
+        },
+        "estimatedCostUsd": {
+          "type": "number"
+        },
+        "inputTokens": {
+          "type": "integer"
+        },
+        "outputTokens": {
+          "type": "integer"
+        },
+        "status": {
+          "type": "string",
+          "enum": ["success", "blocked", "error"]
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "required": [
+        "ownerId",
+        "taskType",
+        "route",
+        "modelUsed",
+        "privacyMode",
+        "estimatedLatencyMs",
+        "actualLatencyMs",
+        "estimatedCostUsd",
+        "inputTokens",
+        "outputTokens",
+        "status",
+        "createdAt"
+      ]
+    }
+  },
+  "firestore": {
+    "/users/{userId}/private/profile": {
+      "schema": { "$ref": "#/entities/UserProfile" },
+      "description": "Owner-isolated private user preferences and privacy posture."
+    },
+    "/conversations/{conversationId}": {
+      "schema": { "$ref": "#/entities/Conversation" },
+      "description": "User-owned conversation headers."
+    },
+    "/conversations/{conversationId}/messages/{messageId}": {
+      "schema": { "$ref": "#/entities/Message" },
+      "description": "Messages belonging to a user-owned conversation."
+    },
+    "/telemetry/{entryId}": {
+      "schema": { "$ref": "#/entities/TelemetryEntry" },
+      "description": "Real execution telemetry measurements scoped to the authenticated owner."
+    }
+  }
+}
